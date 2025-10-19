@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+     <html lang="en">
+     <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Ship Operations Chatbot</title>
+       <link href="./output.css" rel="stylesheet">
+       <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.22.10/babel.min.js"></script>
+     </head>
+     <body>
+       <div id="root"></div>
+       <script type="text/babel">
+         const { useState } = React;
+
+         const knowledgeBase = {
+           "what is sms": "The Safety Management System (SMS) is a structured and documented system enabling company personnel to implement company safety and environmental protection policies effectively. It complies with the International Safety Management (ISM) Code and includes procedures for safe operation, emergency preparedness, and maintenance of the ship.",
+           "how to access ship manuals": "Ship manuals, including operational, safety, and maintenance manuals, are typically stored in the ship's document management system or physical library. Digital copies can be accessed via the ship's intranet or designated software. Contact the Chief Engineer or Safety Officer for access credentials.",
+           "maintenance schedule for engine": "Main engine maintenance schedules depend on the engine type and manufacturer guidelines. Generally, routine checks include daily inspections of oil levels, cooling systems, and fuel systems. Major overhauls occur every 12,000–15,000 running hours or as specified in the Planned Maintenance System (PMS). Refer to the engine manual for details.",
+           "emergency procedures": "Emergency procedures are outlined in the ship's SMS. For fire, muster at designated stations and follow the Fire Plan. For abandon ship, proceed to lifeboat stations with life jackets. Regular drills ensure familiarity. Check the SMS manual or contact the Safety Officer for specifics.",
+           "how to report a safety issue": "Report safety issues via the ship's SMS reporting system, typically a digital form or logbook. Inform the Safety Officer or Master immediately. Include details like location, nature of the issue, and any immediate actions taken"
+         };
+
+         const ShipChatbot = () => {
+           const [messages, setMessages] = useState([
+             { sender: "bot", text: "Welcome to the Ship Operations Chatbot! Ask me about Safety Management Systems, manuals, or maintenance." }
+           ]);
+           const [input, setInput] = useState("");
+
+           const handleSend = () => {
+             if (!input.trim()) return;
+
+             const userMessage = { sender: "user", text: input };
+             setMessages([...messages, userMessage]);
+
+             const lowerInput = input.toLowerCase();
+             let botResponse = "I'm sorry, I don't have specific information on that. Please check the ship's SMS or consult the Chief Engineer/Safety Officer.";
+
+             for (const [question, answer] of Object.entries(knowledgeBase)) {
+               if (lowerInput.includes(question)) {
+                 botResponse = answer;
+                 break;
+               }
+             }
+
+             setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
+             setInput("");
+           };
+
+           const handleKeyPress = (e) => {
+             if (e.key === "Enter") handleSend();
+           };
+
+           return (
+             <div className="flex flex-col h-screen max-w-2xl mx-auto bg-gray-100">
+               <div className="bg-blue-600 text-white p-4 text-center">
+                 <h1 className="text-xl font-bold">Ship Operations Chatbot</h1>
+               </div>
+               <div className="flex-1 p-4 overflow-y-auto">
+                 {messages.map((msg, index) => (
+                   <div
+                     key={index}
+                     className={`mb-2 p-2 rounded-lg max-w-md ${
+                       msg.sender === "user"
+                         ? "bg-blue-200 ml-auto text-right"
+                         : "bg-white mr-auto"
+                     }`}
+                   >
+                     <p className="text-sm">{msg.text}</p>
+                   </div>
+                 ))}
+               </div>
+               <div className="p-4 bg-white border-t">
+                 <div className="flex">
+                   <input
+                     type="text"
+                     value={input}
+                     onChange={(e) => setInput(e.target.value)}
+                     onKeyPress={handleKeyPress}
+                     className="flex-1 p-2 border rounded-l-lg focus:outline-none"
+                     placeholder="Ask about SMS, manuals, or maintenance..."
+                   />
+                   <button
+                     onClick={handleSend}
+                     className="bg-blue-600 text-white p-2 rounded-r-lg hover:bg-blue-700"
+                   >
+                     Send
+                   </button>
+                 </div>
+               </div>
+             </div>
+           );
+         };
+
+         ReactDOM.render(<ShipChatbot />, document.getElementById("root"));
+       </script>
+     </body>
+     </html>
+     ```
+   - Save the file.
+
+---
+
+### Step 2: Rebuild `output.css`
+Since Tailwind didn’t detect utility classes, let’s rebuild `output.css` now that `index.html` exists.
+
+1. **Verify `input.css` and `tailwind.config.js`**:
+   - Open `input.css` in VS Code and confirm:
+     ```css
+     @tailwind base;
+     @tailwind components;
+     @tailwind utilities;
+     ```
+   - Open `tailwind.config.js` and confirm:
+     ```javascript
+     /** @type {import('tailwindcss').Config} */
+     module.exports = {
+       content: ["./*.html"],
+       theme: {
+         extend: {},
+       },
+       plugins: [],
+     }
+     ```
+
+2. **Rebuild `output.css`**:
+   - Run:
+     ```cmd
+     npx tailwindcss -i ./input.css -o ./output.css
+     ```
+     - This should now include classes like `.bg-blue-600` since `index.html` exists.
+
+3. **Check `output.css`**:
+   - Open `output.css` in VS Code and search for `.bg-blue-600` (should include `background-color: #2563eb;`).
+   - If the build fails or `.bg-blue-600` is missing, use the minimal CSS:
+     ```css
+     .flex { display: flex; }
+     .flex-col { flex-direction: column; }
+     .h-screen { height: 100vh; }
+     .max-w-2xl { max-width: 42rem; }
+     .mx-auto { margin-left: auto; margin-right: auto; }
+     .bg-gray-100 { background-color: #f3f4f6; }
+     .bg-blue-600 { background-color: #2563eb; }
+     .text-white { color: #fff; }
+     .p-4 { padding: 1rem; }
+     .text-center { text-align: center; }
+     .text-xl { font-size: 1.25rem; }
+     .font-bold { font-weight: 700; }
+     .flex-1 { flex: 1 1 0%; }
+     .overflow-y-auto { overflow-y: auto; }
+     .mb-2 { margin-bottom: 0.5rem; }
+     .rounded-lg { border-radius: 0.5rem; }
+     .max-w-md { max-width: 28rem; }
+     .ml-auto { margin-left: auto; }
+     .mr-auto { margin-right: auto; }
+     .text-right { text-align: right; }
+     .text-sm { font-size: 0.875rem; }
+     .bg-blue-200 { background-color: #bfdbfe; }
+     .bg-white { background-color: #fff; }
+     .border-t { border-top: 1px solid #e5e7eb; }
+     .border { border: 1px solid #e5e7eb; }
+     .rounded-l-lg { border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem; }
+     .focus\:outline-none:focus { outline: none; }
+     .rounded-r-lg { border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem; }
+     .hover\:bg-blue-700:hover { background-color: #1d4ed8; }
+     ```
+   - Save `output.css`.
+
+---
+
+### Step 3: Run and Test the Chatbot
+1. **Restart the Server**:
+   - Stop `http-server` with `Ctrl + C`.
+   - Run:
+     ```cmd
+     http-server .
+     ```
+
+2. **Open in Browser**:
+   - Go to `http://localhost:8080` in Edge or Chrome.
+   - Check for:
+     - **Blue header** (“Ship Operations Chatbot” with a blue background).
+     - Welcome message in a white bubble.
+     - Input box and blue “Send” button.
+   - Test queries:
+     - “What is SMS?”
+     - “How to access ship manuals?”
+     - “Maintenance schedule for engine?”
+     - “Emergency procedures?”
+     - “How to report a safety issue?”
+
+3. **Clear Browser Cache**:
+   - In Edge, press `Ctrl + Shift + Delete`, select “Cached images and files,” and clear.
+   - Hard refresh: `Ctrl + Shift + R`.
+
+---
+
+### Step 4: Verify File Structure
+Your folder should contain:
+```
+ship-chatbot/
+├── index.html
+├── input.css
+├── output.css
+├── package.json
+├── package-lock.json
+├── tailwind.config.js
+├── node_modules/
+    └── tailwindcss/
+```
+
+- Run:
+  ```cmd
+  dir
+  ```
+
+---
+
+### Step 5: Addressing Issues
+- **No Blue Header**:
+  - The warning indicates `output.css` lacks styles because `index.html` wasn’t present during the build. Rebuilding with `index.html` should fix this.
+- **Previous Issues**:
+  - **Missing `cli.js`**: Your successful Tailwind install (`3.4.10`) should resolve this.
+  - **Favicon 404**: Normal, ignore.
+  - **Deprecation Warning**: Harmless.
+- **Browserslist Warning**: The `caniuse-lite is outdated` warning is minor. You can update it:
+  ```cmd
+  npx update-browserslist-db@latest
+  ```
+  - But it’s not critical for the chatbot.
+
+---
+
+### Step 6: Why This Matters
+Your chatbot will:
+- Answer SMS, manuals, maintenance, and safety queries, supporting maritime operations (e.g., Chief Officer tasks on MV ZIM Aquamarine).
+- Feature a professional interface with a blue header, chat bubbles, and input box.
+
+---
+
+### Troubleshooting
+- **No Blue Header**:
+  - Verify `.bg-blue-600` in `output.css`.
+  - Rebuild `output.css` after creating `index.html`.
+  - Clear browser cache.
+- **Chatbot Not Loading**:
+  - Check browser console (Right-click > Inspect > Console) for errors.
+  - Ensure internet for React/Babel CDNs.
+- **Share Output**:
+  - Run and share:
+    ```cmd
+    dir
+    ```
+    ```cmd
+    npx tailwindcss -i ./input.css -o ./output.css
+    ```
+    ```cmd
+    http-server .
+    ```
+  - Describe the browser view:
+    - Does the chatbot load?
+    - Is the header blue or unstyled?
+    - Do chat bubbles and input box appear?
+  - Share any console errors.
+
+---
+
+You’re nearly done, Rohan! Create `index.html` (**Step 1**), rebuild `output.css` (**Step 2**), and retest (**Step 3**). The blue header should appear now that `index.html` exists for Tailwind to scan. **Please share the requested outputs and describe what you see in the browser.** Your Ship Operations Chatbot is ready to assist with maritime queries!
